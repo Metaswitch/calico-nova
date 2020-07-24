@@ -80,7 +80,7 @@ def security_group_rule_db(rule, id=None):
 
 
 def return_server(context, server_id,
-                  columns_to_join=None, use_slave=False):
+                  columns_to_join=None, use_subordinate=False):
     return fake_instance.fake_db_instance(
         **{'id': int(server_id),
            'power_state': 0x01,
@@ -91,7 +91,7 @@ def return_server(context, server_id,
 
 def return_server_by_uuid(context, server_uuid,
                           columns_to_join=None,
-                          use_slave=False):
+                          use_subordinate=False):
     return fake_instance.fake_db_instance(
         **{'id': 1,
            'power_state': 0x01,
@@ -418,7 +418,7 @@ class TestSecurityGroupsV21(test.TestCase):
         expected = {'security_groups': groups}
 
         def return_instance(context, server_id,
-                            columns_to_join=None, use_slave=False):
+                            columns_to_join=None, use_subordinate=False):
             self.assertEqual(server_id, FAKE_UUID1)
             return return_server_by_uuid(context, server_id)
 
@@ -445,7 +445,7 @@ class TestSecurityGroupsV21(test.TestCase):
         expected = {'security_groups': []}
 
         def return_instance(context, server_id,
-                            columns_to_join=None, use_slave=False):
+                            columns_to_join=None, use_subordinate=False):
             self.assertEqual(server_id, FAKE_UUID1)
             return return_server_by_uuid(context, server_id)
         mock_db_get_ins.side_effect = return_instance

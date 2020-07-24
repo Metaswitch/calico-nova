@@ -19,7 +19,7 @@ from nova.objects import fields
 class BandwidthUsage(base.NovaPersistentObject, base.NovaObject,
                      base.NovaObjectDictCompat):
     # Version 1.0: Initial version
-    # Version 1.1: Add use_slave to get_by_instance_uuid_and_mac
+    # Version 1.1: Add use_subordinate to get_by_instance_uuid_and_mac
     # Version 1.2: Add update_cells to create
     VERSION = '1.2'
 
@@ -45,10 +45,10 @@ class BandwidthUsage(base.NovaPersistentObject, base.NovaObject,
     @base.serialize_args
     @base.remotable_classmethod
     def get_by_instance_uuid_and_mac(cls, context, instance_uuid, mac,
-                                     start_period=None, use_slave=False):
+                                     start_period=None, use_subordinate=False):
         db_bw_usage = db.bw_usage_get(context, uuid=instance_uuid,
                                       start_period=start_period, mac=mac,
-                                      use_slave=use_slave)
+                                      use_subordinate=use_subordinate)
         if db_bw_usage:
             return cls._from_db_object(context, cls(), db_bw_usage)
 
@@ -67,7 +67,7 @@ class BandwidthUsage(base.NovaPersistentObject, base.NovaObject,
 
 class BandwidthUsageList(base.ObjectListBase, base.NovaObject):
     # Version 1.0: Initial version
-    # Version 1.1: Add use_slave to get_by_uuids
+    # Version 1.1: Add use_subordinate to get_by_uuids
     # Version 1.2: BandwidthUsage <= version 1.2
     VERSION = '1.2'
     fields = {
@@ -81,8 +81,8 @@ class BandwidthUsageList(base.ObjectListBase, base.NovaObject):
 
     @base.serialize_args
     @base.remotable_classmethod
-    def get_by_uuids(cls, context, uuids, start_period=None, use_slave=False):
+    def get_by_uuids(cls, context, uuids, start_period=None, use_subordinate=False):
         db_bw_usages = db.bw_usage_get_by_uuids(context, uuids=uuids,
                                                 start_period=start_period,
-                                                use_slave=use_slave)
+                                                use_subordinate=use_subordinate)
         return base.obj_make_list(context, cls(), BandwidthUsage, db_bw_usages)

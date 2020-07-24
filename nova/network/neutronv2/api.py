@@ -666,14 +666,14 @@ class API(base_api.NetworkAPI):
             raise exception.Forbidden()
 
     def get_instance_nw_info(self, context, instance, networks=None,
-                             port_ids=None, use_slave=False,
+                             port_ids=None, use_subordinate=False,
                              admin_client=None):
         """Return network information for specified instance
            and update cache.
         """
-        # NOTE(geekinutah): It would be nice if use_slave had us call
-        #                   special APIs that pummeled slaves instead of
-        #                   the master. For now we just ignore this arg.
+        # NOTE(geekinutah): It would be nice if use_subordinate had us call
+        #                   special APIs that pummeled subordinates instead of
+        #                   the main. For now we just ignore this arg.
         with lockutils.lock('refresh_cache-%s' % instance['uuid']):
             result = self._get_instance_nw_info(context, instance, networks,
                                                 port_ids, admin_client)

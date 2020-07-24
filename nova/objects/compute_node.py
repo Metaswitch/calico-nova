@@ -266,7 +266,7 @@ class ComputeNodeList(base.ObjectListBase, base.NovaObject):
     # Version 1.2 Add get_by_service()
     # Version 1.3 ComputeNode version 1.4
     # Version 1.4 ComputeNode version 1.5
-    # Version 1.5 Add use_slave to get_by_service
+    # Version 1.5 Add use_subordinate to get_by_service
     # Version 1.6 ComputeNode version 1.6
     # Version 1.7 ComputeNode version 1.7
     # Version 1.8 ComputeNode version 1.8 + add get_all_by_host()
@@ -303,7 +303,7 @@ class ComputeNodeList(base.ObjectListBase, base.NovaObject):
                                   db_computes)
 
     @base.remotable_classmethod
-    def _get_by_service(cls, context, service_id, use_slave=False):
+    def _get_by_service(cls, context, service_id, use_subordinate=False):
         try:
             db_computes = db.compute_nodes_get_by_service_id(
                 context, service_id)
@@ -315,14 +315,14 @@ class ComputeNodeList(base.ObjectListBase, base.NovaObject):
                                   db_computes)
 
     @classmethod
-    def get_by_service(cls, context, service, use_slave=False):
-        return cls._get_by_service(context, service.id, use_slave=use_slave)
+    def get_by_service(cls, context, service, use_subordinate=False):
+        return cls._get_by_service(context, service.id, use_subordinate=use_subordinate)
 
     @base.remotable_classmethod
-    def get_all_by_host(cls, context, host, use_slave=False):
+    def get_all_by_host(cls, context, host, use_subordinate=False):
         try:
             db_computes = db.compute_node_get_all_by_host(context, host,
-                                                          use_slave)
+                                                          use_subordinate)
         except exception.ComputeHostNotFound:
             # FIXME(sbauza): Some old computes can still have no host record
             # We need to provide compatibility by using the old service_id
@@ -331,7 +331,7 @@ class ComputeNodeList(base.ObjectListBase, base.NovaObject):
             # call but that's necessary until all nodes are upgraded.
             try:
                 service = objects.Service.get_by_compute_host(context, host,
-                                                              use_slave)
+                                                              use_subordinate)
                 db_computes = db.compute_nodes_get_by_service_id(
                     context, service.id)
             except exception.ServiceNotFound:

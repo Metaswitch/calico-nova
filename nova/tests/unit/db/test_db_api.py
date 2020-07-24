@@ -453,24 +453,24 @@ class NotDbApiTestCase(DbTestCase):
                           self.context, "")
 
     @mock.patch.object(sqlalchemy_api, 'get_session')
-    def test_model_query_use_slave_false(self, mock_get_session):
+    def test_model_query_use_subordinate_false(self, mock_get_session):
         sqlalchemy_api.model_query(self.context, models.Instance,
-                                   use_slave=False)
-        mock_get_session.assert_called_once_with(use_slave=False)
+                                   use_subordinate=False)
+        mock_get_session.assert_called_once_with(use_subordinate=False)
 
     @mock.patch.object(sqlalchemy_api, 'get_session')
-    def test_model_query_use_slave_no_slave_connection(self, mock_get_session):
-        self.flags(slave_connection='', group='database')
+    def test_model_query_use_subordinate_no_subordinate_connection(self, mock_get_session):
+        self.flags(subordinate_connection='', group='database')
         sqlalchemy_api.model_query(self.context, models.Instance,
-                                   use_slave=True)
-        mock_get_session.assert_called_once_with(use_slave=False)
+                                   use_subordinate=True)
+        mock_get_session.assert_called_once_with(use_subordinate=False)
 
     @mock.patch.object(sqlalchemy_api, 'get_session')
-    def test_model_query_use_slave_true(self, mock_get_session):
-        self.flags(slave_connection='foo://bar', group='database')
+    def test_model_query_use_subordinate_true(self, mock_get_session):
+        self.flags(subordinate_connection='foo://bar', group='database')
         sqlalchemy_api.model_query(self.context, models.Instance,
-                                   use_slave=True)
-        mock_get_session.assert_called_once_with(use_slave=True)
+                                   use_subordinate=True)
+        mock_get_session.assert_called_once_with(use_subordinate=True)
 
     @mock.patch.object(sqlalchemy_api, 'get_session')
     def test_model_query_lazy_session_default(self, mock_get_session):
@@ -989,10 +989,10 @@ class SqlAlchemyDbApiTestCase(DbTestCase):
         ctxt = context.get_admin_context()
         sqlalchemy_api.instance_get_all_by_filters(ctxt, {'foo': 'bar'},
             'sort_key', 'sort_dir', limit=100, marker='uuid',
-            columns_to_join='columns', use_slave=True)
+            columns_to_join='columns', use_subordinate=True)
         mock_get_all_filters_sort.assert_called_once_with(ctxt, {'foo': 'bar'},
             limit=100, marker='uuid', columns_to_join='columns',
-            use_slave=True, sort_keys=['sort_key'], sort_dirs=['sort_dir'])
+            use_subordinate=True, sort_keys=['sort_key'], sort_dirs=['sort_dir'])
 
 
 class ProcessSortParamTestCase(test.TestCase):
